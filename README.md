@@ -1,2 +1,0 @@
-# SmartHint
-Teste de C#
