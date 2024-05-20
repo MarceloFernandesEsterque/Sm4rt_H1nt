@@ -21,6 +21,7 @@ using MySqlX.XDevAPI.Relational;
 using Mysqlx.Resultset;
 using System.Globalization;
 
+using Microsoft.Toolkit.Uwp.Notifications;
 
 
 namespace SmartHint_NET
@@ -30,17 +31,24 @@ namespace SmartHint_NET
     {
         int aba { get; set; }
 
+        bool placeN = true;
+        bool placeE = true;
+        bool placeT = true;
+
         DataTable table { get; set; }
 
         ConectMySql conectMy = new ConectMySql();
 
         FormatCad formatCad = new FormatCad();
 
+
         public frmClientes()
         {
             InitializeComponent();
             ConectMySql conectMy = new ConectMySql();
             conectMy.conectaBanco();
+
+            string text = "Free C# tutorials at wellsb.com";
 
             table = conectMy.busca("SELECT NOME_RAZAO AS 'Nome/Razão Social', EMAIL AS 'E-Mail', TEL AS 'Telefône', DATA_CAD AS 'Data de cadastro', IF(BLOQ=0, 'NÃO', 'SIM')  AS 'Bloqueio' FROM CLIENTES;");
 
@@ -56,6 +64,55 @@ namespace SmartHint_NET
             this.dateCriad.CustomFormat = " ";
             this.groupBoxFiltro.Visible = false;
 
+            placeholder(this.textBoxNomeRaz, null);
+            placeholder(this.textBoxEmail, null);
+            placeholder(this.textBoxTel, null);
+
+        }
+
+        public void placeholder(object sender, EventArgs e)
+        {
+            Control txtCombo = sender as Control;
+
+            string txtPlace = "";
+            string place = "";
+
+            switch (txtCombo.Name.ToString())
+            {
+                case "textBoxNomeRaz":
+                    txtPlace = "Nome ou Razão Social do Cliente.";
+                    place = "placeN";
+                    break;
+                case "textBoxEmail":
+                    txtPlace = "E-mail do Cliente.";
+                    place = "placeE";
+                    break;
+                case "textBoxTel":
+                    txtPlace = "Telefone do Cliente.";
+                    place = "placeT";
+                    break;
+                case "dateCriad":
+                    txtPlace = " Selecione uma data ou período.";
+                    place = "placeT";
+                    break;
+            }
+
+            if (txtCombo.Text == "")
+            {
+                txtCombo.ForeColor = Color.Silver;
+                txtCombo.Text = txtPlace;
+                if (place == "placeN") { placeN = true; }
+                else if (place == "placeE") { placeE = true; }
+                else if (place == "placeT") { placeT = true; }
+            }
+            else if (txtCombo.Text == txtPlace)
+            {
+                txtCombo.ForeColor = Color.Black;
+                txtCombo.Text = "";
+                if (place == "placeN") { placeN = false; }
+                else if (place == "placeE") { placeE = false; }
+                else if(place == "placeT") { placeT = false; }
+            }
         }
 
         private void buttonFiltro_Click(object sender, EventArgs e)
@@ -77,21 +134,27 @@ namespace SmartHint_NET
             this.comboBoxBloq.Text = "";
             this.dateCriad.CustomFormat = " ";
             this.textBoxNomeRaz.Text = "";
+            placeholder(this.textBoxNomeRaz, null);
+            placeholder(this.textBoxEmail, null);
+            placeholder(this.textBoxTel, null);
         }
 
         private void buttonLimpNome_Click(object sender, EventArgs e)
         {
             this.textBoxNomeRaz.Text = "";
+            placeholder(this.textBoxNomeRaz, null);
         }
 
         private void buttonLimEmail_Click(object sender, EventArgs e)
         {
             formatCad.limparOb(textBoxEmail);
+            placeholder(textBoxEmail, null);
         }
 
         private void buttonLimTel_Click(object sender, EventArgs e)
         {
             formatCad.limparOb(textBoxTel);
+            placeholder(textBoxTel, null);
         }
 
         private void buttonLimData_Click(object sender, EventArgs e)
@@ -102,11 +165,13 @@ namespace SmartHint_NET
         private void mascTel(object sender, EventArgs e)
         {
             formatCad.mascTel(sender);
+            placeholder(sender, null);
         }
 
         public void validEmail(Object sender, EventArgs e)
         {
             formatCad.emailValid(sender);
+            placeholder(sender, null);
         }
 
         private void buttonAplic_Click(object sender, EventArgs e)
@@ -115,9 +180,9 @@ namespace SmartHint_NET
             conectMy.conectaBanco();
             table = conectMy.busca("SELECT NOME_RAZAO AS 'Nome/Razão Social', EMAIL AS 'E-Mail', TEL AS 'Telefône', DATA_CAD AS 'Data de cadastro', IF(BLOQ=0, 'NÃO', 'SIM')  AS 'Bloqueio' FROM CLIENTES " +
                 "WHERE 1=1 " +
-                (!string.IsNullOrEmpty(this.textBoxNomeRaz.Text) ? $"AND NOME_RAZAO LIKE '%{this.textBoxNomeRaz.Text}%' " : "") +
-                (!string.IsNullOrEmpty(this.textBoxEmail.Text) ? $"AND EMAIL = '{this.textBoxEmail.Text}' " : "") +
-                (!string.IsNullOrEmpty(this.textBoxTel.Text) ? $"AND TEL = '{this.textBoxTel.Text}' " : "") +
+                (!placeN ? $"AND NOME_RAZAO LIKE '%{this.textBoxNomeRaz.Text}%' " : "") +
+                (!placeE ? $"AND EMAIL = '{this.textBoxEmail.Text}' " : "") +
+                (!placeT ? $"AND TEL = '{this.textBoxTel.Text}' " : "") +
                 (!this.dateCriad.Text.Equals(" ") ? $"AND DATA_CAD = '{this.dateCriad.Text}' " : "") +
                 (!string.IsNullOrEmpty(this.comboBoxBloq.Text) ? $"AND BLOQ = '{(this.comboBoxBloq.Text == "Sim" ? "1" : "0")}'" : "") +
                 ";");

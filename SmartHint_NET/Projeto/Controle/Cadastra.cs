@@ -10,6 +10,9 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 using SmartHint_NET.Conect;
 using System.Data;
 using Google.Protobuf.WellKnownTypes;
+using Microsoft.Toolkit.Uwp.Notifications;
+using System.Globalization;
+using System.Drawing;
 
 namespace SmartHint_NET.Cadastro.Controle
 {
@@ -66,6 +69,18 @@ namespace SmartHint_NET.Cadastro.Controle
                         dateNasc = DateTime.Parse(i.Controls["groupBoxPes"].Controls["dateNasc"].Text).ToString("dd/MM/yyyy");
                         break;
                     }
+                    else if (i.Controls["textBoxSenha"].Text.Equals("") && i.Controls["textBoxConfSenha"].Text.Equals(""))
+                    {
+                        MessageBox.Show("Por favor, preencha os campos \"Senhas\" e \"Confirma Senha\".");
+                        string colorcode = "#FFE28686";
+                        int argb = Int32.Parse(colorcode.Replace("#", ""), NumberStyles.HexNumber);
+                        Color clr = Color.FromArgb(argb);
+
+                        i.Controls["textBoxSenha"].BackColor = clr;
+                        i.Controls["textBoxConfSenha"].BackColor = clr;
+                        ok = false;
+                        break;
+                    }
                 }
             }
 
@@ -87,17 +102,37 @@ namespace SmartHint_NET.Cadastro.Controle
                     }
                     else if (insEst == data.Rows[0][2].ToString() && ok)
                     {
-                        MessageBox.Show("Esta Inscrição Estadual já está cadastrado para outro Cliente");
+                        new ToastContentBuilder()
+                        .AddArgument("action", "viewConversation")
+                        .AddArgument("conversationId", 9813)
+                        .AddText("Andrew sent you a picture")
+                        .AddText("Esta Inscrição Estadual já está cadastrado para outro Cliente")
+                        .Show();
+
+                        //MessageBox.Show("Esta Inscrição Estadual já está cadastrado para outro Cliente");
                         ok = false;
                     }
                     else if (i.Controls["textBoxEmail"].Text == data.Rows[0][0].ToString() && ok)
                     {
-                        MessageBox.Show("Este e-mail já está cadastrado para outro Cliente");
+                        new ToastContentBuilder()
+                        .AddArgument("action", "viewConversation")
+                        .AddArgument("conversationId", 9813)
+                        .AddText("Restrições de Cadastro")
+                        .AddText("Este e-mail já está cadastrado para outro Cliente")
+                        .Show();
+                        //MessageBox.Show("Este e-mail já está cadastrado para outro Cliente");
                         ok = false;
                     }
                     else if (i.Controls["textBoxCpfCnpj"].Text == data.Rows[0][1].ToString() && ok)
                     {
-                        MessageBox.Show("Este CPF/CNPJ já está cadastrado para outro Cliente");
+                        new ToastContentBuilder()
+                        .AddArgument("action", "viewConversation")
+                        .AddArgument("conversationId", 9813)
+                        .AddText("Restrições de Cadastro")
+                        .AddText("Este CPF/CNPJ já está cadastrado para outro Cliente")
+                        .Show();
+
+                        //MessageBox.Show("Este CPF/CNPJ já está cadastrado para outro Cliente");
                         ok = false;
                     }
                     else

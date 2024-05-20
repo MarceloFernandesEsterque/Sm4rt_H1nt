@@ -231,6 +231,7 @@
             this.textBoxTel.Size = new System.Drawing.Size(114, 20);
             this.textBoxTel.TabIndex = 4;
             this.textBoxTel.WordWrap = false;
+            this.textBoxTel.Enter += new System.EventHandler(this.placeholder);
             this.textBoxTel.Leave += new System.EventHandler(this.mascTel);
             // 
             // label2
@@ -251,6 +252,7 @@
             this.textBoxEmail.Size = new System.Drawing.Size(191, 20);
             this.textBoxEmail.TabIndex = 2;
             this.textBoxEmail.WordWrap = false;
+            this.textBoxEmail.Enter += new System.EventHandler(this.placeholder);
             this.textBoxEmail.Leave += new System.EventHandler(this.validEmail);
             // 
             // label1
@@ -272,6 +274,8 @@
             this.textBoxNomeRaz.TabIndex = 0;
             this.textBoxNomeRaz.Tag = "Teste";
             this.textBoxNomeRaz.WordWrap = false;
+            this.textBoxNomeRaz.Enter += new System.EventHandler(this.placeholder);
+            this.textBoxNomeRaz.Leave += new System.EventHandler(this.placeholder);
             // 
             // dataGridView1
             // 

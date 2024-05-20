@@ -119,7 +119,7 @@ namespace SmartHint_NET.Cadastro.View
 
         public void senhaValid(Object sender, EventArgs e)
         {
-            if(this.textBoxSenha.Text != "" && this.textBoxConfSenha.Text != "")
+            if(this.textBoxSenha.Text != "")
             {
                 formatCad.senhaValid(this);
             }
